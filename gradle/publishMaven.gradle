@@ -5,7 +5,7 @@ def basePom = {
         name project.displayName
         packaging 'bundle'
         description project.description
-        url 'https://github.com/jayway/JsonPath'
+        url 'https://github.com/qcif/JsonPath'
 
         licenses {
             license {
@@ -16,9 +16,9 @@ def basePom = {
         }
 
         scm {
-            url 'scm:git:git://github.com/jayway/JsonPath.git'
-            connection 'scm:git:git://github.com/jayway/JsonPath.git'
-            developerConnection 'scm:git:git://github.com/jayway/JsonPath.git'
+            url 'scm:git:git://github.com/qcif/JsonPath.git'
+            connection 'scm:git:git://github.com/qcif/JsonPath.git'
+            developerConnection 'scm:git:git://github.com/qcif/JsonPath.git'
         }
 
         developers {
@@ -46,15 +46,16 @@ install {
 uploadArchives {
     deployers << repositories.mavenDeployer {
         if (snapshotVersion) {
-            snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
-                if (project.hasProperty("sonatypeOssUsername")) {
-                    authentication(userName: sonatypeOssUsername, password: sonatypeOssPassword)
+            snapshotRepository(url: "http://dev.redboxresearchdata.com.au/nexus/content/repositories/snapshots/") {
+                if (project.hasProperty("nexusUsername")) {
+                    authentication(userName: nexusUsername, password: nexusPassword)
                 }
             }
         } else {
-            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
-                if (project.hasProperty("sonatypeOssUsername")) {
-                    authentication(userName: sonatypeOssUsername, password: sonatypeOssPassword)
+            repository(url: "http://dev.redboxresearchdata.com.au/nexus/content/repositories/releases/") {
+				authentication(userName: "admin", password: "COvDdDauIlRlb0wfpQ7v")
+                if (project.hasProperty("nexusUsername")) {
+                    authentication(userName: nexusUsername, password: nexusPassword)
                 }
             }
         }

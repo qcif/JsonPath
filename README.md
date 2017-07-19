@@ -1,3 +1,5 @@
+** Note this a fork of the great JsonPath library to address the current libraries inability to set a property that doesn't already exist in the JSON. The change addresses a very specific usecase required in ReDBox and is not generic enough to merge back. Hopefully once a [rewrite](https://github.com/json-path/JsonPath/blob/master/json-path/src/main/java/com/jayway/jsonpath/internal/path/PathToken.java#L46) is completed this fork can be retired **
+
 Jayway JsonPath
 =====================
 
@@ -7,7 +9,7 @@ Jayway JsonPath
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.jayway.jsonpath/json-path/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.jayway.jsonpath/json-path)
 [![Javadoc](https://javadoc-emblem.rhcloud.com/doc/com.jayway.jsonpath/json-path/badge.svg)](http://www.javadoc.io/doc/com.jayway.jsonpath/json-path)
 
-Jayway JsonPath is a Java port of [Stefan Goessner JsonPath implementation](http://goessner.net/articles/JsonPath/). 
+Jayway JsonPath is a Java port of [Stefan Goessner JsonPath implementation](http://goessner.net/articles/JsonPath/).
 
 News
 ----
@@ -25,7 +27,7 @@ News
 
 01 Oct 2014 - Released JsonPath 1.1.0  
 
-26 Sep 2014 - Released JsonPath 1.0.0 
+26 Sep 2014 - Released JsonPath 1.0.0
 
 
 Getting Started
@@ -43,8 +45,8 @@ JsonPath is available at the Central Maven Repository. Maven users add this to y
 
 If you need help ask questions at [Stack Overflow](http://stackoverflow.com/questions/tagged/jsonpath). Tag the question 'jsonpath' and 'java'.
 
-JsonPath expressions always refer to a JSON structure in the same way as XPath expression are used in combination 
-with an XML document. The "root member object" in JsonPath is always referred to as `$` regardless if it is an 
+JsonPath expressions always refer to a JSON structure in the same way as XPath expression are used in combination
+with an XML document. The "root member object" in JsonPath is always referred to as `$` regardless if it is an
 object or array.
 
 JsonPath expressions can use the dot–notation
@@ -182,8 +184,8 @@ String json = "...";
 List<String> authors = JsonPath.read(json, "$.store.book[*].author");
 ```
 
-If you only want to read once this is OK. In case you need to read an other path as well this is not the way 
-to go since the document will be parsed every time you call JsonPath.read(...). To avoid the problem you can 
+If you only want to read once this is OK. In case you need to read an other path as well this is not the way
+to go since the document will be parsed every time you call JsonPath.read(...). To avoid the problem you can
 parse the json first.
 
 ```java
@@ -211,7 +213,7 @@ List<Map<String, Object>> expensiveBooks = JsonPath
 
 What is Returned When?
 ----------------------
-When using JsonPath in java its important to know what type you expect in your result. JsonPath will automatically 
+When using JsonPath in java its important to know what type you expect in your result. JsonPath will automatically
 try to cast the result to the type expected by the invoker.
 
 ```java
@@ -228,10 +230,10 @@ When evaluating a path you need to understand the concept of when a path is `def
 * `?(<expression>)` - an expression
 * `[<number>, <number> (, <number>)]` - multiple array indexes
 
-`Indefinite` paths always returns a list (as represented by current JsonProvider). 
+`Indefinite` paths always returns a list (as represented by current JsonProvider).
 
 By default a simple object mapper is provided by the MappingProvider SPI. This allows you to specify the return type you want and the MappingProvider will
-try to perform the mapping. In the example below mapping between `Long` and `Date` is demonstrated. 
+try to perform the mapping. In the example below mapping between `Long` and `Date` is demonstrated.
 
 ```java
 String json = "{\"date_as_long\" : 1411455611975}";
@@ -266,13 +268,13 @@ List<Map<String, Object>> books =  JsonPath.parse(json)
                                      .read("$.store.book[?(@.price < 10)]");
 ```
 
-You can use `&&` and `||` to combine multiple predicates `[?(@.price < 10 && @.category == 'fiction')]` , 
+You can use `&&` and `||` to combine multiple predicates `[?(@.price < 10 && @.category == 'fiction')]` ,
 `[?(@.category == 'reference' || @.price > 10)]`.
- 
+
 You can use `!` to negate a predicate `[?(!(@.price < 10 && @.category == 'fiction'))]`.
 
 ### Filter Predicates
- 
+
 Predicates can be built using the Filter API as shown below:
 
 ```java
@@ -290,25 +292,25 @@ List<Map<String, Object>> books =
    parse(json).read("$.store.book[?]", cheapFictionFilter);
 
 ```
-Notice the placeholder `?` for the filter in the path. When multiple filters are provided they are applied in order where the number of placeholders must match 
-the number of provided filters. You can specify multiple predicate placeholders in one filter operation `[?, ?]`, both predicates must match. 
+Notice the placeholder `?` for the filter in the path. When multiple filters are provided they are applied in order where the number of placeholders must match
+the number of provided filters. You can specify multiple predicate placeholders in one filter operation `[?, ?]`, both predicates must match.
 
 Filters can also be combined with 'OR' and 'AND'
 ```java
 Filter fooOrBar = filter(
    where("foo").exists(true)).or(where("bar").exists(true)
 );
-   
+
 Filter fooAndBar = filter(
    where("foo").exists(true)).and(where("bar").exists(true)
 );
 ```
 
 ### Roll Your Own
- 
+
 Third option is to implement your own predicates
- 
-```java 
+
+```java
 Predicate booksWithISBN = new Predicate() {
     @Override
     public boolean apply(PredicateContext ctx) {
@@ -316,7 +318,7 @@ Predicate booksWithISBN = new Predicate() {
     }
 };
 
-List<Map<String, Object>> books = 
+List<Map<String, Object>> books =
    reader.read("$.store.book[?].isbn", List.class, booksWithISBN);
 ```
 
@@ -375,11 +377,11 @@ String gender0 = JsonPath.using(conf2).parse(json).read("$[0]['gender']");
 //Works fine (null is returned)
 String gender1 = JsonPath.using(conf2).parse(json).read("$[1]['gender']");
 ```
- 
+
 **ALWAYS_RETURN_LIST**
 <br/>
-This option configures JsonPath to return a list even when the path is `definite`. 
- 
+This option configures JsonPath to return a list even when the path is `definite`.
+
 ```java
 Configuration conf = Configuration.defaultConfiguration();
 
@@ -387,13 +389,13 @@ Configuration conf = Configuration.defaultConfiguration();
 List<String> genders0 = JsonPath.using(conf).parse(json).read("$[0]['gender']");
 //PathNotFoundException thrown
 List<String> genders1 = JsonPath.using(conf).parse(json).read("$[1]['gender']");
-``` 
+```
 **SUPPRESS_EXCEPTIONS**
 <br/>
 This option makes sure no exceptions are propagated from path evaluation. It follows these simple rules:
 
 * If option `ALWAYS_RETURN_LIST` is present an empty list will be returned
-* If option `ALWAYS_RETURN_LIST` is **NOT** present null returned 
+* If option `ALWAYS_RETURN_LIST` is **NOT** present null returned
 
 
 ### JsonProvider SPI
@@ -403,18 +405,18 @@ JsonPath is shipped with three different JsonProviders:
 * [JsonSmartJsonProvider](https://code.google.com/p/json-smart/) (default)
 * [JacksonJsonProvider](https://github.com/FasterXML/jackson)
 * [JacksonJsonNodeJsonProvider](https://github.com/FasterXML/jackson)
-* [GsonJsonProvider](https://code.google.com/p/google-gson/) 
+* [GsonJsonProvider](https://code.google.com/p/google-gson/)
 * [JsonOrgJsonProvider](http://www.json.org/java/index.html)
 
 Changing the configuration defaults as demonstrated should only be done when your application is being initialized. Changes during runtime is strongly discouraged, especially in multi threaded applications.
-  
+
 
 ```java
 Configuration.setDefaults(new Configuration.Defaults() {
 
     private final JsonProvider jsonProvider = new JacksonJsonProvider();
     private final MappingProvider mappingProvider = new JacksonMappingProvider();
-      
+
     @Override
     public JsonProvider jsonProvider() {
         return jsonProvider;
@@ -424,7 +426,7 @@ Configuration.setDefaults(new Configuration.Defaults() {
     public MappingProvider mappingProvider() {
         return mappingProvider;
     }
-    
+
     @Override
     public Set<Option> options() {
         return EnumSet.noneOf(Option.class);
@@ -432,7 +434,7 @@ Configuration.setDefaults(new Configuration.Defaults() {
 });
 ```
 
-Note that the JacksonJsonProvider requires `com.fasterxml.jackson.core:jackson-databind:2.4.5` and the GsonJsonProvider requires `com.google.code.gson:gson:2.3.1` on your classpath. 
+Note that the JacksonJsonProvider requires `com.fasterxml.jackson.core:jackson-databind:2.4.5` and the GsonJsonProvider requires `com.google.code.gson:gson:2.3.1` on your classpath.
 
 ### Cache SPI
 
@@ -441,7 +443,7 @@ In JsonPath 2.1.0 a new Cache SPI was introduced. This allows API consumers to c
 * `com.jayway.jsonpath.spi.cache.LRUCache` (default, thread safe)
 * `com.jayway.jsonpath.spi.cache.NOOPCache` (no cache)
 
-If you want to implement your own cache the API is simple. 
+If you want to implement your own cache the API is simple.
 
 ```java
 CacheProvider.setCache(new Cache() {
@@ -466,4 +468,3 @@ CacheProvider.setCache(new Cache() {
 
 
 [![Analytics](https://ga-beacon.appspot.com/UA-54945131-1/jsonpath/index)](https://github.com/igrigorik/ga-beacon)
-
